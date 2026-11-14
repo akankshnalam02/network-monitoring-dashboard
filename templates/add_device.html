@@ -1,0 +1,65 @@
+{% extends "base.html" %} {% block content %}
+
+<h1>Add Network Device</h1>
+
+<p class="text-muted">Register a device for network monitoring.</p>
+
+<form method="POST">
+  <div class="mb-3">
+    <label class="form-label"> Device Name </label>
+
+    <input
+      type="text"
+      name="name"
+      class="form-control"
+      placeholder="Router-01"
+      required
+    />
+  </div>
+
+  <div class="mb-3">
+    <label class="form-label"> IP Address / Hostname </label>
+
+    <input
+      type="text"
+      name="ip_address"
+      class="form-control"
+      placeholder="192.168.1.1"
+      required
+    />
+  </div>
+
+  <div class="mb-3">
+    <label class="form-label"> Device Type </label>
+
+    <select name="device_type" class="form-select">
+      <option>Router</option>
+
+      <option>Switch</option>
+
+      <option>Server</option>
+
+      <option>PC</option>
+
+      <option>Firewall</option>
+
+      <option>Other</option>
+    </select>
+  </div>
+
+  <div class="mb-3">
+    <label class="form-label"> Description </label>
+
+    <textarea
+      name="description"
+      class="form-control"
+      placeholder="Main network router"
+    ></textarea>
+  </div>
+
+  <button type="submit" class="btn btn-primary">Add Device</button>
+
+  <a href="/" class="btn btn-secondary"> Cancel </a>
+</form>
+
+{% endblock %}

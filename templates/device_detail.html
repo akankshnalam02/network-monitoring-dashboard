@@ -1,0 +1,165 @@
+{% extends "base.html" %} {% block title %}{{ device.name }} | Network Monitor{%
+endblock %} {% block content %}
+<section class="hero-row compact">
+  <div>
+    <p class="eyebrow">Device profile / {{ device.device_type }}</p>
+    <h1>{{ device.name }}</h1>
+    <p class="lede">
+      <span class="mono">{{ device.ip_address }}</span> &middot; {{
+      device.description or 'No description provided.' }}
+    </p>
+  </div>
+  <div class="hero-actions">
+    <form
+      method="post"
+      action="{{ url_for('check_device_now', device_id=device.id) }}"
+    >
+      <button class="btn btn-primary">Run check</button>
+    </form>
+    <a
+      class="btn btn-secondary"
+      href="{{ url_for('edit_device', device_id=device.id) }}"
+      >Edit device</a
+    >
+  </div>
+</section>
+<section class="stat-grid">
+  <div class="stat-card">
+    <span class="stat-label">Current status</span
+    ><strong class="status status-{{ device.latest_status|lower }}"
+      ><i></i>{{ device.latest_status }}</strong
+    ><small
+      >Last check {{ device.latest_log.checked_at|datetime if device.latest_log
+      else 'Never' }}</small
+    >
+  </div>
+  <div class="stat-card accent-green">
+    <span class="stat-label">Uptime estimate</span
+    ><strong
+      >{{ device.uptime_percent ~ '%' if device.uptime_percent is not none else
+      '--' }}</strong
+    ><small>Based on recorded checks</small>
+  </div>
+  <div class="stat-card accent-yellow">
+    <span class="stat-label">Latest latency</span
+    ><strong
+      >{{ device.latest_log.latency ~ ' ms' if device.latest_log and
+      device.latest_log.latency is not none else '--' }}</strong
+    ><small>Alert threshold {{ latency_threshold }} ms</small>
+  </div>
+  <div class="stat-card">
+    <span class="stat-label">Monitored ports</span
+    ><strong>{{ device.ports|length }}</strong
+    ><small>TCP services configured</small>
+  </div>
+</section>
+<div class="content-grid">
+  <section class="panel">
+    <div class="panel-heading">
+      <div>
+        <p class="eyebrow">Historical checks</p>
+        <h2>Availability and latency</h2>
+      </div>
+      <a href="{{ url_for('logs', device_id=device.id) }}" class="text-link"
+        >Open filtered logs</a
+      >
+    </div>
+    {% if logs %}
+    <div class="table-responsive">
+      <table class="table app-table align-middle">
+        <thead>
+          <tr>
+            <th>Checked at</th>
+            <th>Status</th>
+            <th>Latency</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for log in logs[:20] %}
+          <tr>
+            <td>{{ log.checked_at|datetime }}</td>
+            <td>
+              <span class="status status-{{ log.status|lower }}"
+                ><i></i>{{ log.status }}</span
+              >
+            </td>
+            <td>
+              {{ log.latency ~ ' ms' if log.latency is not none else '--' }}
+            </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+    {% else %}
+    <div class="empty-state">Run the first check to create history.</div>
+    {% endif %}
+  </section>
+  <section class="panel">
+    <div class="panel-heading">
+      <div>
+        <p class="eyebrow">Configured services</p>
+        <h2>TCP ports</h2>
+      </div>
+      <a href="{{ url_for('add_port') }}" class="text-link">Add port</a>
+    </div>
+    {% if device.ports %}
+    <div class="port-list">
+      {% for port in device.ports %}
+      <div class="port-row">
+        <span class="port-number">{{ port.port_number }}</span>
+        <div>
+          <strong>{{ port.service_name }}</strong
+          ><small class="d-block muted"
+            >Last check: {{ port.last_checked|datetime }}</small
+          >
+        </div>
+        <span class="status status-{{ port.status|lower }}"
+          ><i></i>{{ port.status }}</span
+        >
+        <form
+          method="post"
+          action="{{ url_for('delete_port', port_id=port.id) }}"
+          onsubmit="return confirm('Stop monitoring this port?');"
+        >
+          <button class="icon-button" title="Stop monitoring port">
+            Remove
+          </button>
+        </form>
+      </div>
+      {% endfor %}
+    </div>
+    {% else %}
+    <div class="empty-state">No TCP ports configured.</div>
+    {% endif %}
+  </section>
+</div>
+<section class="panel mt-4">
+  <div class="panel-heading">
+    <div>
+      <p class="eyebrow">Device-specific alerts</p>
+      <h2>Alert history</h2>
+    </div>
+    <span class="chip">{{ alerts|length }} recent</span>
+  </div>
+  {% if alerts %}
+  <div class="alert-list">
+    {% for alert in alerts %}
+    <div class="alert-row {% if alert.is_resolved %}resolved{% endif %}">
+      <div class="alert-dot {{ alert.alert_type|lower }}"></div>
+      <div>
+        <strong>{{ alert.alert_type|replace('_', ' ')|title }}</strong>
+        <p>{{ alert.message }}</p>
+        <small
+          >{{ alert.created_at|datetime }}{% if alert.is_resolved %} &middot;
+          Resolved{% endif %}</small
+        >
+      </div>
+    </div>
+    {% endfor %}
+  </div>
+  {% else %}
+  <div class="empty-state">No alerts for this device.</div>
+  {% endif %}
+</section>
+{% endblock %}

@@ -1,0 +1,73 @@
+{% extends "base.html" %}{% block title %}Monitoring logs | Network Monitor{%
+endblock %}{% block content %}
+<section class="hero-row compact">
+  <div>
+    <p class="eyebrow">Audit trail / historical checks</p>
+    <h1>Monitoring logs.</h1>
+    <p class="lede">
+      Review up to 200 recent checks and export the full history as CSV.
+    </p>
+  </div>
+  <a class="btn btn-primary" href="{{ url_for('export_logs') }}"
+    >Download CSV</a
+  >
+</section>
+<section class="panel">
+  <form class="filter-row" method="get">
+    <label
+      >Filter by device<select name="device_id" onchange="this.form.submit()">
+        <option value="">All devices</option>
+        {% for device in devices %}
+        <option
+          value="{{ device.id }}"
+          {%
+          if
+          selected_device
+          is
+          equalto(device.id)
+          %}selected{%
+          endif
+          %}
+        >
+          {{ device.name }}
+        </option>
+        {% endfor %}
+      </select></label
+    ><a href="{{ url_for('logs') }}" class="text-link">Clear filter</a>
+  </form>
+  {% if logs %}
+  <div class="table-responsive">
+    <table class="table app-table align-middle">
+      <thead>
+        <tr>
+          <th>Checked at</th>
+          <th>Device</th>
+          <th>Address</th>
+          <th>Status</th>
+          <th>Latency</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for log in logs %}
+        <tr>
+          <td>{{ log.checked_at|datetime }}</td>
+          <td><strong>{{ log.device.name }}</strong></td>
+          <td class="mono">{{ log.device.ip_address }}</td>
+          <td>
+            <span class="status status-{{ log.status|lower }}"
+              ><i></i>{{ log.status }}</span
+            >
+          </td>
+          <td>
+            {{ log.latency ~ ' ms' if log.latency is not none else '--' }}
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+  {% else %}
+  <div class="empty-state">No monitoring logs match this filter.</div>
+  {% endif %}
+</section>
+{% endblock %}

@@ -1,0 +1,42 @@
+{% extends "base.html" %}{% block title %}Monitor a port | Network Monitor{%
+endblock %}{% block content %}
+<div class="form-page">
+  <p class="eyebrow">Monitoring / TCP service</p>
+  <h1>Monitor a port</h1>
+  <p class="lede">
+    Track whether an authorized TCP service is reachable from this dashboard
+    host.
+  </p>
+  <form method="post" class="panel form-panel">
+    <div class="form-grid">
+      <label
+        >Device<select name="device_id" required>
+          <option value="">Select a device</option>
+          {% for device in devices %}
+          <option value="{{ device.id }}">
+            {{ device.name }} - {{ device.ip_address }}
+          </option>
+          {% endfor %}
+        </select></label
+      ><label
+        >Port number<input
+          type="number"
+          name="port_number"
+          min="1"
+          max="65535"
+          placeholder="443"
+          required /></label
+      ><label class="full"
+        >Service name <span class="muted">optional</span
+        ><input
+          name="service_name"
+          placeholder="Auto-detected from common ports"
+      /></label>
+    </div>
+    <div class="form-actions">
+      <a class="btn btn-light" href="{{ url_for('dashboard') }}">Cancel</a
+      ><button class="btn btn-primary" type="submit">Start monitoring</button>
+    </div>
+  </form>
+</div>
+{% endblock %}

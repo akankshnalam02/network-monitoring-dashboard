@@ -1,0 +1,61 @@
+{% extends "base.html" %}{% block title %}{{ 'Edit' if device else 'Add' }}
+device | Network Monitor{% endblock %}{% block content %}
+<div class="form-page">
+  <p class="eyebrow">
+    Inventory / {{ 'edit device' if device else 'new device' }}
+  </p>
+  <h1>{{ 'Edit device' if device else 'Add a network device' }}</h1>
+  <p class="lede">
+    Keep the identity and address of each monitored system clear and current.
+  </p>
+  <form method="post" class="panel form-panel">
+    <div class="form-grid">
+      <label
+        >Device name<input
+          name="name"
+          value="{{ values.name }}"
+          placeholder="Core Router"
+          required /></label
+      ><label
+        >IP address or hostname<input
+          name="ip_address"
+          value="{{ values.ip_address }}"
+          placeholder="192.168.1.1"
+          required /></label
+      ><label
+        >Device type<select name="device_type">
+          {% for type in ['Router', 'Switch', 'Server', 'PC', 'Firewall',
+          'Other'] %}
+          <option
+            {%
+            if
+            values.device_type
+            is
+            equalto(type)
+            %}selected{%
+            endif
+            %}
+          >
+            {{ type }}
+          </option>
+          {% endfor %}
+        </select></label
+      ><label class="full"
+        >Description<textarea
+          name="description"
+          rows="4"
+          placeholder="Role, location, or owner"
+        >
+{{ values.description }}</textarea
+        >
+      </label>
+    </div>
+    <div class="form-actions">
+      <a class="btn btn-light" href="{{ url_for('dashboard') }}">Cancel</a
+      ><button class="btn btn-primary" type="submit">
+        {{ 'Save changes' if device else 'Add device' }}
+      </button>
+    </div>
+  </form>
+</div>
+{% endblock %}
