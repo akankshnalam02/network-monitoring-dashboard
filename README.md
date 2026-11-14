@@ -1,4 +1,4 @@
-# Network Monitoring and Security Dashboard
+<img width="1892" height="1076" alt="image" src="https://github.com/user-attachments/assets/c3630040-0ae7-471c-99ef-0258ed4ee98a" /># Network Monitoring and Security Dashboard
 
 > A focused Flask operations console for monitoring authorized devices, TCP services, latency, alerts, and historical network health.
 
@@ -46,7 +46,8 @@ Monitoring can be paused per device without deleting its inventory or historical
 
 ## Dashboard Preview
 
-![Dashboard preview](docs/dashboard-preview-2.png)
+<img width="1892" height="1076" alt="image" src="https://github.com/user-attachments/assets/31dac66d-4471-44f7-b2d0-0573612c60fb" />
+
 
 The dashboard combines status totals, average latency, searchable inventory, recent alerts, monitored services, recent checks, and a latency chart. The preview was captured from the seeded local demo environment.
 
