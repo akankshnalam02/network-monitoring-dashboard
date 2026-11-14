@@ -1,4 +1,3 @@
-<img width="1892" height="1076" alt="image" src="https://github.com/user-attachments/assets/c3630040-0ae7-471c-99ef-0258ed4ee98a" /># Network Monitoring and Security Dashboard
 
 > A focused Flask operations console for monitoring authorized devices, TCP services, latency, alerts, and historical network health.
 
